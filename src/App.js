@@ -3,10 +3,10 @@ import { NewsList } from "./components";
 import { useState, useEffect } from "react";
 import Search from "./components/Search";
 import NewsItemSkeleton from "./components/NewsItemSkeleton";
-import tempData from "./articles";
-
+/*import tempData from "./articles";   passed the 100 limit*/
 
 const API_KEY = process.env.REACT_APP_API;
+
 function App() {
   const [articles, setArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,28 +14,10 @@ function App() {
 
   const getArticles = async () => {
     try {
-      var requestOptions = {
-        method: "GET"
-      };
-
-      var params = {
-        api_token: API_KEY,
-        search: searchQuery,
-        limit: "50"
-      };
-
-      var esc = encodeURIComponent;
-      var query = Object.keys(params)
-        .map(function (k) {
-          return esc(k) + "=" + esc(params[k]);
-        })
-        .join("&");
-
       setLoading(true);
 
       const response = await fetch(
-        "https://api.thenewsapi.com/v1/news/all?" + query,
-        requestOptions
+        `https://api.thenewsapi.com/v1/news/all?api_token=${API_KEY}&search=${searchQuery}&limit=50`
       );
 
       const json = await response.json();
@@ -44,11 +26,11 @@ function App() {
         setArticles(json.data);
       }
 
-      setArticles(tempData.data);
+      /*  setArticles(tempData.data); running temp data*/
 
       setLoading(false);
 
-      console.log(json);
+      console.log(json); // Check the API response data
 
     } catch (error) {
       console.log(error);
@@ -57,7 +39,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (API_KEY) {
+    if (API_KEY && searchQuery) {
       getArticles();
     }
   }, [searchQuery]);
@@ -68,8 +50,7 @@ function App() {
 
       {loading ? (
         <div className="skeleton-container">
-          {" "}
-          <NewsItemSkeleton />{" "}
+          <NewsItemSkeleton />
         </div>
       ) : (
         <NewsList articles={articles} />
