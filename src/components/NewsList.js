@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { NewsItem } from ".";
 
 const NewsList = ({ articles }) => {
-  if (!articles?.length) return <div> There's no article available </div>;
+  if (!articles?.length) return <div> Type your news request... </div>;
   return (
     <div>
       {articles.map((article) => {
